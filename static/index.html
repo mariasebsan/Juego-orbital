@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#070c1d">
+  <title>Guerra Orbital | Comando estelar</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<canvas id="stars" aria-hidden="true"></canvas>
+<div class="ambient ambient-a"></div><div class="ambient ambient-b"></div>
+<div class="app">
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="Guerra Orbital"><span class="brand-mark">✦</span><span>GUERRA <b>ORBITAL</b></span></a>
+    <span class="top-status"><span class="status-light" id="connectionDot"></span><span id="connectionLabel">CONECTANDO</span></span>
+  </header>
+
+  <main>
+    <section id="landing" class="screen landing">
+      <div class="eyebrow"><span class="line"></span> SISTEMA DE COMBATE MULTIJUGADOR <span class="line"></span></div>
+      <div class="hero-orbit" aria-hidden="true"><span class="planet"></span><span class="ring ring-one"></span><span class="ring ring-two"></span><span class="spacecraft craft-one">✦</span><span class="spacecraft craft-two">✧</span></div>
+      <h1>GUERRA<br><em>ORBITAL</em></h1>
+      <p class="hero-desc">Dos comandantes. Cinco satélites. Una galaxia por conquistar.<br>Despliega tu flota, gestiona tu energía y domina el tablero.</p>
+      <div class="entry-card glass">
+        <label for="nameInput">IDENTIFICACIÓN DEL COMANDANTE</label>
+        <input id="nameInput" maxlength="22" placeholder="Tu nombre de piloto" autocomplete="nickname">
+        <div class="entry-actions">
+          <button class="btn primary" id="createBtn">✦ CREAR PARTIDA <span>↗</span></button>
+          <div class="join-row"><input id="codeInput" maxlength="6" placeholder="CÓDIGO" aria-label="Código de la sala"><button class="btn secondary" id="joinBtn">UNIRME →</button></div>
+        </div>
+      </div>
+      <div class="hero-features"><span>◇ 2 JUGADORES</span><span>◇ ESTRATEGIA POR TURNOS</span><span>◇ TIEMPO REAL</span></div>
+    </section>
+
+    <section id="roomScreen" class="screen hidden">
+      <div class="section-heading"><div><div class="eyebrow align-left">SALA PRIVADA · CANAL SEGURO</div><h2 id="roomTitle">Preparación de combate</h2><p id="roomSubtitle" class="muted">Esperando a los comandantes</p></div><div class="room-code glass"><span>CÓDIGO DE SALA</span><strong id="roomCode">------</strong><button id="copyBtn" title="Copiar enlace de invitación">COPIAR ENLACE ↗</button></div></div>
+      <div class="lobby-grid">
+        <section class="glass lobby-panel">
+          <div class="panel-head"><div><span class="mini-label">01 / DESPLIEGUE</span><h3>Tu constelación</h3></div><span class="tag" id="deployTag">EN PREPARACIÓN</span></div>
+          <div class="instruction" id="deployInstruction">Coloca tu satélite de 5 casillas</div>
+          <div class="board-frame"><div class="board-labels-x" id="deployTop"></div><div class="board-body"><div class="board-labels-y" id="deployLeft"></div><div id="deployBoard" class="board" role="grid" aria-label="Tablero de despliegue"></div></div></div>
+          <div class="placement-footer"><button id="rotateBtn" class="btn ghost">↻ GIRAR <kbd>R</kbd></button><span id="orientationLabel">HORIZONTAL →</span><button id="randomBtn" class="btn ghost">⚄ ALEATORIO</button></div>
+          <button id="readyBtn" class="btn primary full" disabled>CONFIRMAR DESPLIEGUE →</button>
+        </section>
+        <aside class="lobby-aside"><div class="glass aside-panel"><span class="mini-label">02 / COMANDANTES</span><div id="playersList" class="players-list"></div></div><div class="glass aside-panel rules-panel"><span class="mini-label">PROTOCOLO DE COMBATE</span><h3>Reglas de misión</h3><p>Coloca cinco satélites de tamaños 5, 4, 3, 2 y 1, en horizontal o vertical y sin solaparlos.</p><p>Ganas al impactar las 15 casillas de los satélites rivales. Cada acción consume energía que puedes acumular entre turnos.</p><span class="small-accent">Consejo: pulsa R para girar los satélites.</span></div></aside>
+      </div>
+    </section>
+
+    <section id="battleScreen" class="screen hidden">
+      <div class="battle-head"><div><div class="eyebrow align-left" id="battleStage">ENFRENTAMIENTO / EN DIRECTO</div><h2 id="battleTitle">Centro de mando</h2><p id="battleMessage" class="muted">Selecciona tu siguiente movimiento.</p></div><div class="turn-chip" id="turnChip"><span class="pulse-dot"></span><span id="turnText">ESPERANDO</span></div></div>
+      <div class="stats-strip glass"><div class="stat"><span>ENERGÍA DISPONIBLE</span><strong class="energy-num" id="myEnergy">5 <small>⚡</small></strong></div><div class="stat"><span>IMPACTOS CONFIRMADOS</span><strong id="myHitsCount">0 <small>/ 15</small></strong></div><div class="stat"><span>SATÉLITES ENEMIGOS DESTRUIDOS</span><strong id="enemySunk">0 <small>/ 5</small></strong></div><div class="stat"><span>MI FLOTA OPERATIVA</span><strong id="myRemaining">5 <small>/ 5</small></strong></div></div>
+      <div class="battle-grid">
+        <section class="glass battlefield enemy-field"><div class="panel-head"><div><span class="mini-label red-label">OBJETIVO / SECTOR HOSTIL</span><h3>Radar enemigo</h3></div><span class="tag red-tag">◉ ESCANEO ACTIVO</span></div><div class="board-frame"><div class="board-labels-x" id="enemyTop"></div><div class="board-body"><div class="board-labels-y" id="enemyLeft"></div><div id="enemyBoard" class="board" role="grid" aria-label="Radar enemigo"></div></div></div><p class="board-hint">Selecciona un ataque y haz clic en la casilla objetivo.</p></section>
+        <section class="glass battlefield"><div class="panel-head"><div><span class="mini-label">BASE / SECTOR ALIADO</span><h3>Mi constelación</h3></div><span class="tag cyan-tag">◇ DEFENSA</span></div><div class="board-frame"><div class="board-labels-x" id="ownTop"></div><div class="board-body"><div class="board-labels-y" id="ownLeft"></div><div id="ownBoard" class="board" role="grid" aria-label="Mi constelación"></div></div></div><p class="board-hint">Selecciona «Escudo» y haz clic aquí para proteger una casilla.</p></section>
+      </div>
+      <section class="actions-panel glass"><div class="actions-heading"><div><span class="mini-label">ARSENAL TÁCTICO</span><h3>Selecciona tu maniobra</h3></div><span class="mini-label" id="actionHint">UNA ACCIÓN POR TURNO</span></div><div id="actionButtons" class="action-buttons"></div><div class="last-action" id="lastAction">Las comunicaciones están abiertas. Buena suerte, comandante.</div></section>
+    </section>
+  </main>
+  <footer>GUERRA ORBITAL <span>·</span> PROYECTO DE INTELIGENCIA ARTIFICIAL <span>·</span> SISTEMA ONLINE V1.0</footer>
+</div>
+<div id="toast" class="toast hidden" role="status"></div>
+<div id="overlay" class="overlay hidden"><div class="overlay-card glass"><span class="overlay-icon" id="overlayIcon">✦</span><span class="mini-label" id="overlayEyebrow">MISIÓN</span><h2 id="overlayTitle">¡Victoria!</h2><p id="overlayText"></p><button class="btn primary" onclick="location.href='/'">VOLVER AL INICIO ↗</button></div></div>
+<script src="/static/app.js"></script>
+</body></html>
